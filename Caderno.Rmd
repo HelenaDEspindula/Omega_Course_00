@@ -25,17 +25,18 @@ http://omegadatascience.com.br/downloads/instrucoes.html
 
 ## Atalhos R
 
-ctron + enter - avalia paragrafo
-cntrol +shift + 0 - 4 telas
-mouse na função + F1 - abre help da função
-control + shift + c - comenta e descomenta
-Alt + "-" - setinha de atribuição
-control + shift + M - pipe
-control +i - tab?
+- Ctrl + enter - avalia paragrafo
+- Ctrl +shift + 0 - 4 telas
+- Mouse na função + F1 - abre help da função
+- Ctrl + shift + c - comenta e descomenta
+- Alt + "-" - setinha de atribuição
+- Ctrl + shift + M - pipe
+- Ctrl + i - tab?
 
 ## Exemplo 1 - Futebol
 
 ```{r }
+
 
 library(tidyverse)
 
@@ -59,7 +60,9 @@ str(tb, give.attr = FALSE)
 #ncol(tb)
 #nrom(tb)
 dim(tb) ##dimensões
+```
 
+```{r }
 # 2. O nome das equipes.
 
 #tb$team
@@ -77,17 +80,23 @@ tb_distin
 
 ## tb %>% distinct(team)= distinct(tb, team)
 ## %>% = operador pipe
+```
 
+```{r }
 # 3. Total de jogadores por equipe.
 
 tb %>%
   count(team, sort = TRUE)
+```
 
+```{r }
 # 4. Total de jogadores por país de origem.
 
 tb %>%
   count(country, sort = TRUE)
+```
 
+```{r }
 # 5. Total de gols por equipe.
 # 6. Total de cartões amarelos por equipe.
 # 7. Total de cartões amarelos e vermelhos por equipe.
@@ -121,7 +130,9 @@ tb %>%
 
 
 # summarise_all() - aplica em tudo
+```
 
+```{r }
 # 8. Substitua o NA dos cartões por 0.
 
 #Verificar se todos os NA podem ser substituidos por 0!!!
@@ -135,7 +146,8 @@ tb %>%
     cm = b,
     kg = 80
   )) %>%
-  View()
+  head()
+  #View()
 
 
 tb %>%
@@ -146,12 +158,15 @@ tb %>%
     cm2 = mean(tb$cm, na.rm = TRUE),
     kg = 80
   )) %>%
-  View()
+  head()
+  #View()
 
 find("replace_na")
 find("group_by")
 find("summarize")
+```
 
+```{r }
 # 9. Obtenha a média, médiana e desvio-padrão de (idade|altura|peso) por equipe.
 
 tb %>%
@@ -171,7 +186,8 @@ tb %>%
 tb <- tb %>%
   mutate(imc = kg / (cm / 100) ^ 2)
 
-View(tb)
+#View(tb)
+head(tb)
 
 tb %>%
   group_by(team) %>%
@@ -181,7 +197,9 @@ tb %>%
 tb %>%
   slice_max(order_by = imc, n = 10) %>%
   select(name, cm, kg, imc)
+```
 
+```{r }
 # 11.5 Crie a variável que represente a classe de obesidade pelo IMC.
 
 lim <- c(0, 16.5, 18.5, 25, 30, 35, 40, Inf)
@@ -203,7 +221,10 @@ tb %>%
 
 
 #View(tb2)
+head(tb2)
+```
 
+```{r }
 # 12. Calcule a proporção de disputas aéreas ganhas por faixa de altura com amplitura de classe de altura de 5 cm.
 
 range(tb$cm, na.rm = TRUE)
@@ -213,7 +234,8 @@ lim <- seq(160, 210, by = 5)
 tb <- tb %>%
   mutate(cm_classe = cut(cm, breaks = lim))
 
-View(tb)
+#View(tb)
+head(td)
 
 tb %>%
   select(aw)
@@ -228,7 +250,9 @@ tb <- tb %>%
 tb %>%
   group_by(cm_classe2) %>%
   summarise_at("aw", mean, na.rm = TRUE)
+```
 
+```{r }
 # 13. Crie a variável que representa a posição em campo do jogador.
 
 tb %>%
@@ -246,7 +270,9 @@ tb %>%
 
 ##REGEX
 
+```
 
+```{r }
 # 13. Tabela times x posição
 
 tb %>%
@@ -264,56 +290,75 @@ tb %>%
 ## Exemplo 2 - Carros
 
 
-```{r}
-## Exemplo 2 - Carros
-
-
-
 ```{r }
 # Caminho para os dados.
-url <- "http://leg.ufpr.br/~walmes/data/hb20_venda_webmotors_280314.txt"
+url <-
+  "http://leg.ufpr.br/~walmes/data/hb20_venda_webmotors_280314.txt"
+
 # Leitura com `readr`.
+
 tb <- read_tsv(file = url,
                col_names = TRUE)
+
 class(tb)
+
 str(tb, give.attr = FALSE)
+
 #View(tb)
+head(tb)
+
 tb %>%
   count(carro) %>%
-  mutate(freq = n/sum(n))
+  mutate(freq = n / sum(n))
+
 tb %>%
   count(cor, sort = TRUE)
+
 tb %>%
   count(cor, carro) %>%
   pivot_wider(names_from = "carro", values_from = n)
-xtabs(~cor + carro, data = tb)
+
+xtabs(~ cor + carro, data = tb)
+
 tb <- tb %>%
-  mutate(cambio = ifelse(str_detect(especificacao, "MANUAL"), yes = "MANUAL", no = "AUTO"))
+  mutate(cambio = ifelse(
+    str_detect(especificacao, "MANUAL"),
+    yes = "MANUAL",
+    no = "AUTO"
+  ))
+
 tb %>%
   count(cambio)
 # tb %>%
-#   mutate(cambio = case_when(str_detect(especificacao, "MANUAL") ~ "MANUAL" 
+#   mutate(cambio = case_when(str_detect(especificacao, "MANUAL") ~ "MANUAL"
 #                             TRUE ~ "AUTO") %>%
 #            count(cambio)
+
 with(tb, cor(km, preco))
+
 tb %>%
-  mutate_at(c("preco", "km"), ~cut_number(., n=1)) %>%
+  mutate_at(c("preco", "km"), ~ cut_number(., n = 1)) %>%
   count(preco, km)
+
 tb %>%
-  mutate(preco = cut_number(preco, 4), 
+  mutate(preco = cut_number(preco, 4),
          km = cut(km, c(0, 1, 5000, 30000, Inf), right = FALSE)) %>%
   count(preco, km) %>%
   pivot_wider(names_from = "km", values_from = "n")
+
 tb %>%
-  mutate(km = cut(km, 
-                  breaks = c(0, 1, 5000, 30000, Inf),
-                  labels = c("novo", "seminovo", "semiusado", "usado")), 
-         right = FALSE) %>%
+  mutate(km = cut(
+    km,
+    breaks = c(0, 1, 5000, 30000, Inf),
+    labels = c("novo", "seminovo", "semiusado", "usado")),
+  right = FALSE) %>%
   group_by(carro, km) %>%
   summarise_at("preco", mean) %>%
   pivot_wider(names_from = "carro", values_from = "preco")
 
+```
 
+```{r }
 # 1. O número de veículos da tabela.
 # 2. O tipo de valor de cada variável.
 # 3. O número de veículos à venda por modelo.
@@ -385,7 +430,7 @@ tb %>%
 EXEMPLO
 
 ```{r}
-rm(list=ls())
+rm(list = ls())
 
 ## Carregando alguns pacotes adicionais
 library(readr) # Leitura de arquivos
@@ -410,13 +455,16 @@ head(dados)
 #dados$hora_prevista_chegada <- hm(dados$hora_prevista_chegada )
 #dados$hora_chegada <- hm(dados$hora_chegada)
 
-dados$hora_prevista_chegada2 <- hms(dados$hora_prevista_chegada, roll = TRUE )
+dados$hora_prevista_chegada2 <-
+  hms(dados$hora_prevista_chegada, roll = TRUE)
+
 dados$hora_chegada2 <- hms(dados$hora_chegada, roll = TRUE)
 
 str(dados)
 
 dados$atraso <- dados$hora_chegada2 - dados$hora_prevista_chegada2
-dados$atraso <- as.numeric(dados$atraso)/60
+
+dados$atraso <- as.numeric(dados$atraso) / 60
 
 ## Olhando o resultado
 #View(dados)
@@ -438,6 +486,8 @@ dados %>%
 head(dados)
 
 ```
+
+
 ```{r}
 ## Vamos somar 60*24 = 1440 minutes apenas nestes casos
 dados <- dados %>%
@@ -525,7 +575,9 @@ dados %>%
   group_by(dia_semana) %>%
   summarize("Media" = mean(atraso, na.rm = TRUE),
             "Desvio_padrao" = sd(atraso, na.rm = TRUE))
+```
 
+```{r }
 ## Dia do mês ------------------------------------------------------------------
 ggplot(dados) +
   geom_boxplot(aes(x = as.factor(dia_mes), y = atraso))
@@ -534,12 +586,17 @@ dados %>%
   group_by(dia_mes) %>%
   summarize("Media" = mean(atraso, na.rm = TRUE),
             "Desvio_padrao" = sd(atraso, na.rm = TRUE)) %>%
-  View()
+  head()
+  #View()
+```
 
+```{r }
 ## Dia do ano ------------------------------------------------------------------
 ggplot(dados) +
   geom_boxplot(aes(x = as.factor(dia_ano), y = atraso))
+```
 
+```{r }
 ## Mes do ano ------------------------------------------------------------------
 ggplot(dados) +
   geom_boxplot(aes(x = mes, y = atraso))
@@ -733,7 +790,9 @@ plot(fit_smooth)
 # tbm calcular probabilidades de interesse, por exemplo, probabilidade de atrasar
 # mais de 60 minutos.
 
+```
 
+```{r }
 ################################################################################
 
 ## Regressão logística
@@ -908,28 +967,19 @@ library(DataExplorer)
 library(GGally)
 
 #-----------------------------------------------------------------------
+```
+
+```{r }
 # Aquisição dos dados.
 
 url <- "http://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data"
 da <- read_csv(url, col_names = FALSE)
 attr(da, "spec") <- NULL
 str(da)
-
-# Criando o nome das variáveis.
-nms <- c("radius", "texture", "perimeter", "area", "smoothness",
-         "compactness", "concavity", "concave", "symmetry",
-         "fractal")
-n <- outer(Y = c("mn", "sd", "lg"),
-           X = nms,
-           FUN = paste, sep = "_")
-names(da) <- c("id", "diagnosis", n)
-str(da)
-
 ```
 
-
-```{r}
-# Criando o nome das variÃ¡veis.
+```{r }
+# Criando o nome das variáveis.
 nms <- c("radius", "texture", "perimeter", "area", "smoothness",
          "compactness", "concavity", "concave", "symmetry",
          "fractal")
@@ -945,8 +995,9 @@ da <- da %>%
 da %>%
     select(starts_with("radius"))
 
-#-----------------------------------------------------------------------
+```
 
+```{r }
 da %>%
     count(diagnosis) %>%
     mutate(freq = n/sum(n))
