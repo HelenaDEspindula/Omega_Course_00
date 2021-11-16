@@ -17,12 +17,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 http://leg.ufpr.br/~walmes/introds/
 
-Git: https://github.com/HelenaDEspindula/Omega_Course_1.git
-<<<<<<< HEAD
+Git: https://github.com/HelenaDEspindula/Omega_Course_00.git
 
 http://omegadatascience.com.br/downloads/instrucoes.html
-=======
->>>>>>> d9842829a2a531f827dce1db759358ce988ef3ea
+
 
 ## Atalhos R
 
