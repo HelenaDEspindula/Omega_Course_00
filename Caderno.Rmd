@@ -1,0 +1,2332 @@
+<<<<<<< HEAD
+---
+title: "Caderno"
+author: "Helena"
+date: "09/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# 0. Curso 0 - Introdução a Ciência de Dados
+
+## 0.1. Aula /10/2021 - Abertura
+
+## 0.2. Aula /10/2021 - R geral
+
+http://leg.ufpr.br/~walmes/introds/
+
+Git: https://github.com/HelenaDEspindula/Omega_Course_1.git
+<<<<<<< HEAD
+
+http://omegadatascience.com.br/downloads/instrucoes.html
+=======
+>>>>>>> d9842829a2a531f827dce1db759358ce988ef3ea
+
+## Atalhos R
+
+- Ctrl + enter - avalia paragrafo
+- Ctrl +shift + 0 - 4 telas
+- Mouse na função + F1 - abre help da função
+- Ctrl + shift + c - comenta e descomenta
+- Alt + "-" - setinha de atribuição
+- Ctrl + shift + M - pipe
+- Ctrl + i - tab?
+
+## Exemplo 1 - Futebol
+
+```{r }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 3599d7be885b4c969c479fac4029b938b4705b5f
+library(tidyverse)
+library(readr)
+packageVersion("readr")
+
+# Caminho para o arquivo na WEB.
+
+#url <- "http://leg.ufpr.br/~walmes/data/euro_football_players.txt"
+url <- "euro_football_players.txt"
+
+# Leitura com `readr`.
+tb <- read_tsv(
+  file = url,
+  col_names = TRUE,
+  quote = "",
+  comment = "#"
+)
+class(tb)
+str(tb, give.attr = FALSE)
+
+#ncol(tb)
+#nrom(tb)
+dim(tb) ##dimensões
+```
+
+```{r }
+# 2. O nome das equipes.
+
+#tb$team
+
+unique(tb$team)
+
+#tb %>%
+#  distinct(team) %>%
+#print(n=Inf) %>%
+#View()
+
+tb_distin <- tb %>%
+  distinct(team)
+tb_distin
+
+## tb %>% distinct(team)= distinct(tb, team)
+## %>% = operador pipe
+```
+
+```{r }
+# 3. Total de jogadores por equipe.
+
+tb %>%
+  count(team, sort = TRUE)
+```
+
+```{r }
+# 4. Total de jogadores por país de origem.
+
+tb %>%
+  count(country, sort = TRUE)
+```
+
+```{r }
+# 5. Total de gols por equipe.
+# 6. Total de cartões amarelos por equipe.
+# 7. Total de cartões amarelos e vermelhos por equipe.
+
+# tb %>%
+#   count(, sort = TRUE)
+
+names(tb)
+
+tb %>%
+  group_by(team) %>%
+  summarise(
+    goal = sum(goal, na.rm = TRUE),
+    amarelos = sum(yel, na.rm = TRUE),
+    vermelhos = sum(red, na.rm = TRUE)) %>%
+  head()
+
+tb %>%
+  group_by(team) %>%
+  summarise_at(c("goal", "yel", "red"), sum, na.rm = TRUE) %>%
+  head()
+
+
+tb %>%
+  group_by(team) %>%
+  summarise_at(c("goal", "yel", "red"), c("mean", "sd", "sum"), na.rm = TRUE) %>%
+  head()
+
+
+tb %>%
+  group_by(team) %>%
+  summarise_if(is.numeric, c("mean", "sd", "sum"), na.rm = TRUE) %>%
+  head()
+
+
+# summarise_all() - aplica em tudo
+```
+
+```{r }
+# 8. Substitua o NA dos cartões por 0.
+
+#Verificar se todos os NA podem ser substituidos por 0!!!
+head(tb, n = 20L)
+
+a <- 0
+b <- mean(tb$cm, na.rm = TRUE)
+tb2 <- tb %>%
+  replace_na(replace = list(
+    goal = a,
+    yel = 0,
+    red = 0,
+    cm = b,
+    kg = 80
+<<<<<<< HEAD
+  ))
+=======
+  )) %>%
+  head()
+  #View()
+>>>>>>> 3599d7be885b4c969c479fac4029b938b4705b5f
+
+head(tb2, n = 20L)
+#View()
+
+
+tb2 <- tb %>%
+  replace_na(replace = list(
+    goal = a,
+    yel = 0,
+    red = 0,
+    cm2 = mean(tb$cm, na.rm = TRUE),
+    kg = 80
+<<<<<<< HEAD
+  ))
+
+head(tb2, n = 20L)
+#View()
+=======
+  )) %>%
+  head()
+  #View()
+>>>>>>> 3599d7be885b4c969c479fac4029b938b4705b5f
+
+find("replace_na")
+find("group_by")
+find("summarize")
+```
+
+```{r }
+# 9. Obtenha a média, médiana e desvio-padrão de (idade|altura|peso) por equipe.
+
+tb %>%
+  group_by(team) %>%
+  summarise_at(c("cm", "kg", "age"), c("mean", "median", "sd"), na.rm = TRUE) %>%
+  head()
+
+# 10. Determine a correlação entre peso e altura por equipe.
+
+tb %>%
+  group_by(team) %>%
+  summarise(correlacao = cor(kg, cm, use = "pairwise.complete.obs")) %>%
+  head()
+#pear?
+
+# 11. Determine o IMC médio por equipe.
+
+# IMC = peso (kg) / (alt (m) )²
+
+tb <- tb %>%
+  mutate(imc = kg / (cm / 100) ^ 2)
+  
+head(tb)
+
+#View(tb)
+<<<<<<< HEAD
+=======
+head(tb)
+>>>>>>> 3599d7be885b4c969c479fac4029b938b4705b5f
+
+tb %>%
+  group_by(team) %>%
+  summarise_at("imc", mean, na.rm = TRUE) %>%
+  arrange(desc(imc)) %>%
+  head()
+
+tb %>%
+  slice_max(order_by = imc, n = 10) %>%
+  select(name, cm, kg, imc) %>%
+  head()
+
+select(name, cm, kg, imc)
+
+```
+
+```{r }
+# 11.5 Crie a variável que represente a classe de obesidade pelo IMC.
+
+lim <- c(0, 16.5, 18.5, 25, 30, 35, 40, Inf)
+
+lab <- c("sev", "aba", "normal", "preobe", "obe1", "obe2", "obe3")
+
+head(tb, n = 20L)
+
+tb2 <- tb %>%
+  mutate(imc_classe = cut(imc, breaks = lim, labels = lab))
+
+#View(tb)
+head(tb2, n = 30L)
+
+tb2 %>%
+  count(imc_classe)
+
+tb2 %>%
+  filter(imc_classe == "preobe") %>%
+  select(name, kg, cm, imc, imc_classe, team) %>%
+  count(team, sort = TRUE)
+
+
+#View(tb2)
+head(tb2)
+```
+
+```{r }
+# 12. Calcule a proporção de disputas aéreas ganhas por faixa de altura com amplitura de classe de altura de 5 cm.
+
+range(tb$cm, na.rm = TRUE)
+
+lim <- seq(160, 210, by = 5)
+
+tb <- tb %>%
+  mutate(cm_classe = cut(cm, breaks = lim))
+
+#View(tb)
+head(td)
+
+tb %>%
+  select(aw)
+
+tb %>%
+  group_by(cm_classe) %>%
+  summarise_at("aw", mean, na.rm = TRUE)
+
+tb <- tb %>%
+  mutate(cm_classe2 = cut(cm, breaks = lim, right = FALSE))
+
+tb %>%
+  group_by(cm_classe2) %>%
+  summarise_at("aw", mean, na.rm = TRUE)
+```
+
+```{r }
+# 13. Crie a variável que representa a posição em campo do jogador.
+
+tb %>%
+  count(pos)
+
+tb %>%
+  mutate(position = str_sub(pos, 0, 1)) %>%
+  count(position)
+
+tb <- tb %>%
+  mutate(position = str_replace(pos, "^([A-Z]+).*", "\\1"))
+
+tb %>%
+  count(position)
+
+##REGEX
+
+```
+
+```{r }
+# 13. Tabela times x posição
+
+tb %>%
+  count(team, position) %>%
+  pivot_wider(names_from = position, values_from = n)
+
+
+tb %>%
+  count(cm_classe, position) %>%
+  pivot_wider(names_from = position, values_from = n)
+
+```
+
+
+## Exemplo 2 - Carros
+
+
+```{r }
+# Caminho para os dados.
+url <-
+  "http://leg.ufpr.br/~walmes/data/hb20_venda_webmotors_280314.txt"
+
+# Leitura com `readr`.
+
+tb <- read_tsv(file = url,
+               col_names = TRUE)
+
+class(tb)
+
+str(tb, give.attr = FALSE)
+
+#View(tb)
+head(tb)
+
+tb %>%
+  count(carro) %>%
+  mutate(freq = n / sum(n))
+
+tb %>%
+  count(cor, sort = TRUE)
+
+tb %>%
+  count(cor, carro) %>%
+  pivot_wider(names_from = "carro", values_from = n)
+
+xtabs(~ cor + carro, data = tb)
+
+tb <- tb %>%
+  mutate(cambio = ifelse(
+    str_detect(especificacao, "MANUAL"),
+    yes = "MANUAL",
+    no = "AUTO"
+  ))
+
+tb %>%
+  count(cambio)
+# tb %>%
+#   mutate(cambio = case_when(str_detect(especificacao, "MANUAL") ~ "MANUAL"
+#                             TRUE ~ "AUTO") %>%
+#            count(cambio)
+
+with(tb, cor(km, preco))
+
+tb %>%
+  mutate_at(c("preco", "km"), ~ cut_number(., n = 1)) %>%
+  count(preco, km)
+
+tb %>%
+  mutate(preco = cut_number(preco, 4),
+         km = cut(km, c(0, 1, 5000, 30000, Inf), right = FALSE)) %>%
+  count(preco, km) %>%
+  pivot_wider(names_from = "km", values_from = "n")
+
+tb %>%
+  mutate(km = cut(
+    km,
+    breaks = c(0, 1, 5000, 30000, Inf),
+    labels = c("novo", "seminovo", "semiusado", "usado")),
+  right = FALSE) %>%
+  group_by(carro, km) %>%
+  summarise_at("preco", mean) %>%
+  pivot_wider(names_from = "carro", values_from = "preco")
+
+```
+
+```{r }
+# 1. O número de veículos da tabela.
+# 2. O tipo de valor de cada variável.
+# 3. O número de veículos à venda por modelo.
+# 4. O número de veículos de cada cor.
+# 5. O preço médio de cada modelo.
+# 6. O número médio de km rodados por ano por modelo.
+# 7. O preço médio por veículo para faixas de km rodados com amplitude de classe de 10 km.
+```
+
+
+
+
+## 0.3. Aula /10/2021 - Modelagem
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+
+
+## 0.4. Aula 04/11/2021 - Estatistica
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+
+
+## 0.5. Aula 09/11/2021 - Modelagem
+
+EXEMPLO
+
+```{r}
+rm(list = ls())
+
+## Carregando alguns pacotes adicionais
+library(readr) # Leitura de arquivos
+library(dplyr) # Manipulação de dados
+library(lubridate) # Manipulação de datas e horas
+library(ggplot2) ## Gráficos
+
+## Carregando a base de dados
+url <- "http://leg.ufpr.br/~wagner/data/omegafly.csv"
+dados <- read_csv2(url)
+
+## Dar uma olhada na base de dados
+#View(dados)
+head(dados)
+
+```
+
+
+```{r}
+## Calculando os atrasos
+
+#dados$hora_prevista_chegada <- hm(dados$hora_prevista_chegada )
+#dados$hora_chegada <- hm(dados$hora_chegada)
+
+dados$hora_prevista_chegada2 <-
+  hms(dados$hora_prevista_chegada, roll = TRUE)
+
+dados$hora_chegada2 <- hms(dados$hora_chegada, roll = TRUE)
+
+str(dados)
+
+dados$atraso <- dados$hora_chegada2 - dados$hora_prevista_chegada2
+
+dados$atraso <- as.numeric(dados$atraso) / 60
+
+## Olhando o resultado
+#View(dados)
+head(dados)
+
+```
+
+
+```{r}
+## Histograma
+ggplot(dados) +
+  geom_histogram(aes(atraso))
+
+## Valores negativos, estranho?
+dados %>%
+  filter(atraso < -100) #%>%
+  #View(dados)
+
+head(dados)
+
+```
+
+
+```{r}
+## Vamos somar 60*24 = 1440 minutes apenas nestes casos
+dados <- dados %>%
+  mutate(atraso = ifelse(atraso < -100, atraso + 1440, atraso))
+
+## Para facilitar a visualização vamos excluir atrasos acima de 500
+dados <- dados %>% 
+  mutate(atraso = ifelse(atraso > 500, NA, atraso))
+
+## Distribuição de frequências
+ggplot(dados) +
+  geom_histogram(aes(atraso))
+
+```
+
+
+```{r}
+## Por que um voo atrasa?
+
+## Aeroporto de origem ---------------------------------------------------------
+ggplot(dados) +
+  geom_density(aes(atraso, y = ..density.., fill = origin))
+
+ggplot(dados) +
+  geom_boxplot(aes(x = origin, y = atraso))
+
+## Operadora do voo ------------------------------------------------------------
+ggplot(dados) +
+  geom_density(aes(atraso, y = ..density.., fill =carrier))
+
+ggplot(dados) +
+  geom_boxplot(aes(x = carrier, y = atraso))
+
+ggplot(dados) +
+  geom_boxplot(aes(x = carrier, y = atraso)) +
+  facet_wrap(~ origin)
+
+## Atraso médio por operadora e aeroporto de origem
+dados %>%
+  group_by(origin, carrier) %>%
+  summarize("Media" = mean(atraso, na.rm = TRUE),
+            "Desvio_padrao" = sd(atraso, na.rm = TRUE))
+```
+
+
+```{r}
+
+## Criando covariáveis baseado na data -----------------------------------------
+dados$time_hour <- as.POSIXct(dados$time_hour, format = "%Y/%m/%d %H:%M")
+dados <- dados %>%
+  mutate(ano = year(time_hour),
+         dia_semana = wday(time_hour, label = TRUE),
+         dia_ano = yday(time_hour),
+         dia_mes = mday(time_hour),
+         mes = month(time_hour, label = TRUE), 
+         dia = day(time_hour),
+         hora = hour(time_hour),
+         minuto = minute(time_hour), .)
+
+dados$dia_semana <- factor(dados$dia_semana, levels = c("dom", "seg", "ter", 
+                                                        "qua", "qui", "sex", "sáb"))
+dados$mes <- factor(dados$mes, levels = c("jan", "fev", "mar", "abr", "mai", "jun",
+                                          "jul", "ago", "set", "out", "nov", "dez"))
+```
+
+
+```{r}
+## Hora prevista da partida-----------------------------------------------------
+ggplot(dados) +
+  geom_boxplot(aes(x = as.factor(hora), y = atraso))
+
+dados %>%
+  group_by(hora) %>%
+  summarize("Media" = mean(atraso, na.rm = TRUE),
+            "Desvio_padrao" = sd(atraso, na.rm = TRUE))
+```
+
+
+```{r}
+## Dia da semana ---------------------------------------------------------------
+ggplot(dados) +
+  geom_boxplot(aes(x = dia_semana, y = atraso))
+
+dados %>%
+  group_by(dia_semana) %>%
+  summarize("Media" = mean(atraso, na.rm = TRUE),
+            "Desvio_padrao" = sd(atraso, na.rm = TRUE))
+```
+
+```{r }
+## Dia do mês ------------------------------------------------------------------
+ggplot(dados) +
+  geom_boxplot(aes(x = as.factor(dia_mes), y = atraso))
+
+dados %>%
+  group_by(dia_mes) %>%
+  summarize("Media" = mean(atraso, na.rm = TRUE),
+            "Desvio_padrao" = sd(atraso, na.rm = TRUE)) %>%
+  head()
+  #View()
+```
+
+```{r }
+## Dia do ano ------------------------------------------------------------------
+ggplot(dados) +
+  geom_boxplot(aes(x = as.factor(dia_ano), y = atraso))
+```
+
+```{r }
+## Mes do ano ------------------------------------------------------------------
+ggplot(dados) +
+  geom_boxplot(aes(x = mes, y = atraso))
+
+dados %>%
+  group_by(mes) %>%
+  summarize("Media" = mean(atraso, na.rm = TRUE),
+            "Desvio_padrao" = sd(atraso, na.rm = TRUE))
+
+## Voltar para os slides.
+
+```
+
+### Inferencia estatistica
+- Modelo -> comportamento da natureza
+- Parâmetros do modelo -> parametros populacionais de interesse
+- Qual moddelo melhor descreve os dados?
+- Baseado na amostra -> encontrar os parâmetros compativeis com a amostra
+- Descrever a incerteza -> distribuição amostral
+
+
+### O que é um modelo?
+- É uma função parametrizada (controlada)
+- Distribuição de probabilidade
+
+[...]
+
+### Fenômenos aleatórios
+
+
+### Modelo estatístico
+- Modelos fornecem fórmulas gerais para tratar situações similares
+- Permite determinar probabilidades de eventos
+- Servem para estimar parâmetros
+- Permitem realizar testes de hipoteses
+- Permitem compreender/acomodar o efeito de covariaveis sobre o comportamento da variavel de interesse
+- São empregados para fazer previsão
+- Fazem suposições que podem ou não serr razoaveis
+- Podem ser flexibilizados para acomodar diferentes situações
+
+### Inferência estatística
+- População -> distribuição de probabilidade
+- Intuição -> como a variavel aleatoria se comporta na população
+- Variavel de interesse -> variavel aleatoria
+- Parametro da população -> parametros da distribuição de probabilidade
+- Como a partir da amostra estimar os parametros populacionais?
+ -- Método de max verossim *
+ -- Método dos min quadrados
+ -- Métodos do momentos
+ -- Funções de estimações
+ -- etc
+ 
+*mais popular e com melhores propried estatisticas
+ 
+### Modelos de regressão - 17 e 18
+ 
+Conjunto de técnicas aplicadas na analise e modelagem da relação estatisytica entre as variaveis. Generalização do que é chamado em ML de aprendizagem supervisionada 
+
+(esperança?) 
+
+### O que pensam os criadores? - 19
+
+"All models are wrong but some are useful" - George Box
+
+"No matter how beautiful your theory..." - Richard Feynman
+
+"Far better an approximate answer to the right question..." - John W. Tukey
+
+
+### Componentes do modelo de regressão
+
+[imagem com formulas]
+
+###
+
+Variavel resposta
+co-variaveis (influenciam a resposta)
+Distribuição de probabilidade (normal, binomial, poisson, beta etc)
+Quantidade = funsão
+
+### Objetivos
+
+Nível 1: O objetivo é meramente descritivo.
+
+- Livre de suposições.
+- Não envolve inferência estatística.
+
+Nível 2: Inferência estatística é o principal objetivo.(Associação)
+
+- Intervalos de confiança e testes de hipóteses.
+- Núcleo da estatística convencional.
+- Uso correto com dados observacionais é um grande desafio.
+
+Nível 3: Inferência causal. (Causa)
+
+- Demanda uma especificação conceitual do modelo.
+- Baseado em conhecimento específico do fenômeno.
+- Dados experimentais.
+- Aspectos confundidores devem ser cuidadosamente controlados.
+
+### Frameworks populares - 30
+
+- Modelos lineares(lm() pacote car).
+- Modelos não lineares (nls()).
+- Modelos lineares generalizados (glm()).
+- Modelos aditivos generalizados (gam()).
+- Modelos aditivos generalizados para locação, escala e corpo (gamlss()).
+- Aspectos em comum:
+  - Ajuste é baseado no método da Máxima Verossimilhança ou alguma aproximação deste.
+- Principais limitações:
+  - Conjunto limitado de distribuições.
+  - Assume que as observações são independentes.
+  - Apenas uma variável resposta.
+
+
+```{r}
+## Especificando um modelo simples para descrever os atrasos --------------------
+
+
+## Acertando as categorias para mostrar na ordem natural
+dados$dia_semana <- as.character(dados$dia_semana)
+dados$dia_semana <- as.factor(dados$dia_semana)
+dados$dia_semana <- factor(dados$dia_semana, levels = c("dom", "seg", "ter", 
+                                                        "qua", "qui", "sex", "sáb"))
+
+dados$mes <- as.character(dados$mes)
+dados$mes <- as.factor(dados$mes)
+dados$mes <- factor(dados$mes, levels = c("jan", "fev", "mar", "abr", "mai", "jun",
+                                          "jul", "ago", "set", "out", "nov", "dez"))
+
+
+## Regressão linear simples
+# Efeito só da origem
+
+#modelo <- lm(variavel_de_interres ~ explicada_por_variavel, origem_dos_dados)
+fit1 <- lm(atraso ~ origin, data = dados)
+summary(fit1)
+
+#aeroporto parece não fazer diferença
+
+
+## Regressão linear múltipla
+# Efeito da operadorad
+fit2 <- lm(atraso ~ carrier, data = dados)
+summary(fit2)
+
+#p significativo
+
+## Hora do dia
+fit3 <- lm(atraso ~as.factor(hora), data = dados)
+summary(fit3)
+
+## Dia da semana
+fit4 <- lm(atraso ~ dia_semana, data = dados)
+summary(fit4)
+
+## Dia do mês
+fit5 <- lm(atraso ~ as.factor(dia), data = dados)
+summary(fit5)
+
+## Mes do ano
+fit6 <- lm(atraso ~ mes, data = dados)
+summary(fit6)
+
+## Dia do ano
+fit7 <- lm(atraso ~ as.factor(dia_ano), data = dados)
+summary(fit7)
+
+## Juntando tudo!
+fit_completo <- lm(atraso ~ origin + carrier +as.factor(hora) + 
+                     dia_semana + mes, data = dados)
+summary(fit_completo)
+
+## E dia do ano e dia do mes? 
+fit_completo2 <- lm(atraso ~ origin + carrier +as.factor(hora) + dia_semana + mes +
+                     as.factor(dia_mes) + as.factor(dia_ano), data = dados)
+summary(fit_completo2)
+
+## Muitos parâmetros!! Superparametrização ???
+anova(fit_completo2)
+
+## Tem como simplificar?
+require(mgcv)
+fit_smooth <- gam(atraso ~ origin + carrier + as.factor(hora) + dia_semana + mes +
+                   s(dia_mes) + s(dia_ano), data = dados)
+summary(fit_smooth)
+plot(fit_smooth)
+
+## Podemos criar uma espécie de API em que entramos com as características do
+# voo e a API solta o tempo esperado de atraso a incerteza associada. Podemos
+# tbm calcular probabilidades de interesse, por exemplo, probabilidade de atrasar
+# mais de 60 minutos.
+
+```
+
+```{r }
+################################################################################
+
+## Regressão logística
+
+# Vamos supor que queremos apenas calcular a probabilidade de atrasar mais de 60 minutos.
+# Podemos criar uma nova variável resposta sendo: 0 se Y < 60 e 1 Y >= 60
+
+dados <- dados %>%
+  mutate(binaria = ifelse(atraso < 60, 0, 1))
+prop.table(table(dados$binaria))
+
+
+## Modelo completo
+fit_logistico <- gam(binaria ~ origin + carrier + as.factor(hora) + 
+                       dia_semana + mes + s(dia_mes) + s(dia_ano), 
+                     family = binomial, data = dados)
+summary(fit_logistico)
+
+################################################################################
+
+## Projeto: Detectando o genero baseado em características da voz
+
+# Nome: Gender Recognition by Voice
+# Tipo de resposta: Binária
+# Modelo candidato: Regressão logística
+# Endereço: Gender Recognition by Voice
+# Arquivo: voice.csv
+# Nível: Intermediário
+
+```
+
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+
+
+
+
+
+
+### Tópicos avançados
+ 
+### O que são observações não independentes? 
+- Observações com alguma referência espacial.
+- Dados de área.
+- Geostatística.
+- Processos pontuais.
+- Séries temporais.
+- Dados longitudinais.
+- Dados de família (gêmeos).
+
+
+### Múltiplas variáveis resposta
+
+- Descrição do fenômeno aleatório é feita por meio de várias variáveis aleatórias.
+- Experiência do usuário em um app: Tempo de permanência, número de cliques, número de acessos.
+- Fertilidade: Número de ovos, número de embriões, nível de estradiol e gonatropim.
+- Eficácia de fisioterapia respiratória: Taxa de respiração, batimento cardiáco, saturação de oxigênio.
+
+### Modelos multivariados de covariância linear generalizada
+- McGLMs é um framework genérico para especificação de modelos estatísticos para
+dados não independentes e múltiplas respostas.
+- Proposto em 2016 por Bonat e Jorgensen.
+- Generaliza e unifica uma série de statistical modelling frameworks:
+  - Modelos lineares generalizados (GLMs).
+  - Modelos mistos (LMM).
+  - Double GLMs.
+  - Modelos para dados longitudinais e medidas repetidas.
+  - Séries temporais.
+  - Dados espaciais e espaço-temporais.
+  - Dados genéticos, família e gêmeos.
+  - Etc ...
+
+
+### Projeto V: Ajustando um modelo
+
+- Reconhecimento de gênero baseado em característica da voz.
+- Aplicação da regressão logística.
+- Conjunto de dados: voice.csv
+- Kaggle: https://www.kaggle.com/primaryobjects/voicegender
+- Disponível em leg.ufpr.br/~wagner/data
+
+## 0.5. Aula 09/11/2021 - Machine Learnig
+
+### Categorias:
+1. Supervisionado
+  - Regressão
+  - Classificação
+2. Não supervisionado
+  - Agrupamento: kmeans; hirer (hierarquico)
+  - Redução de dimesão: t-snt, pca
+  - Regras de associação: FP-Grath, A-rebels
+3. Semi-supervisionado
+4. Aprendizado para Reforço
+
+### Modelos
+
+Variaveis (x1, x2, x3) -> [ Modelo ] -> y
+
+- Naive Bayes -> Redes baysianas
+- SVN -> Regressão
+- Redes Neurais -> Árvores -> Florestas Aleatórias
+
+Modelo inclui o pre-processamento
+
+"tudo q vc faz com ML vc faz com modelos estatísticos, mas o inverso não é verdade"
+
+### KNN (k vizinhos mais proximos)
+
+Exemplo
+
+x1 |
+   |
+   |
+   ________
+        x2
+        
+x1 e x2 são numericos
+
+Classificação em A e B
+
+Lazy learner -> vê quem está mais proximo e coloca na mesma categoria
+k = 1 (o vizinho mais proximo)
+k = 2 (os dois mais proximos)
+etc
+
+votação simples
+k = 6 -> se 4 vermelhos e 2 pretos o vermelho ganha por votação simples
+
+
+ponderado pela distancia
+
+k é um hiperparâmetro - nois variamos para ver o que funciona melhor
+
+
+tem que considerar a escala de cada parametro para evitar valorizar acidentalmente 
+
+Conjunto de treino
+
+
+
+```{r}
+#-----------------------------------------------------------------------
+#                                            Prof. Dr. Walmes M. Zeviani
+#                                leg.ufpr.br/~walmes · github.com/walmes
+#                                        walmes@ufpr.br · @walmeszeviani
+#                      Laboratory of Statistics and Geoinformation (LEG)
+#                Department of Statistics · Federal University of Paraná
+#                                       2021-nov-11 · Curitiba/PR/Brazil
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
+# Pacotes.
+
+rm(list = objects())
+
+library(tidyverse)
+library(DataExplorer)
+library(GGally)
+
+#-----------------------------------------------------------------------
+```
+
+```{r }
+# Aquisição dos dados.
+
+url <- "http://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data"
+da <- read_csv(url, col_names = FALSE)
+attr(da, "spec") <- NULL
+str(da)
+```
+
+```{r }
+# Criando o nome das variáveis.
+nms <- c("radius", "texture", "perimeter", "area", "smoothness",
+         "compactness", "concavity", "concave", "symmetry",
+         "fractal")
+n <- outer(Y = c("mn", "sd", "lg"),
+           X = nms,
+           FUN = paste, sep = "_")
+names(da) <- c("id", "diagnosis", n)
+str(da)
+
+da <- da %>%
+    select(-id)
+
+da %>%
+    select(starts_with("radius"))
+
+```
+
+```{r }
+da %>%
+    count(diagnosis) %>%
+    mutate(freq = n/sum(n))
+
+ls("package:DataExplorer")
+
+plot_boxplot(da, by = "diagnosis", nrow = 6, ncol = 5)
+
+ggpairs(data = select(da, diagnosis, ends_with("mn")),
+        ggplot2::aes(colour = diagnosis))
+
+ggpairs(data = select(da, diagnosis, ends_with("sd")),
+        ggplot2::aes(colour = diagnosis))
+
+ggpairs(data = select(da, diagnosis, ends_with("lg")),
+        ggplot2::aes(colour = diagnosis))
+
+```
+
+
+
+
+Z-score
+
+Z = (y - ÿ)/ sd(y) -> faz com que a media seja 0 e variancia seja 1
+Variancia é 1 mas a amplitude varia
+
+U = (y - min(y))/ max(y) - min(y) -> U E [0,1]-> MIN VIRA 0 E MAXIMO 1 e interpola o resto
+Amplitude é sempre 1
+
+
+
+
+```{r}
+to_unit <- function(x) {
+  a <- min(x)
+  b <- max(x)
+  (x-a)/(b-a)
+}
+
+names(da)
+
+db <- da %>%
+  mutate_at(vars(-diagnosis), to_unit)
+
+summary(db)
+
+d_b <- da %>%
+  mutate_at(vars(-diagnosis), to_unit)
+
+summary(d_b)
+
+```
+
+Dividir entre grupo de treino (criação) e de teste
+
+```{r}
+
+
+library(class)
+
+p <- 0.75
+n <- nrow(db)
+
+i <- sample(
+  c(TRUE, FALSE),
+  size = n,
+  replace = TRUE,
+  prob = c(p, 1 - p)
+)
+table(i)
+
+db_train <- db[i, ]
+db_test <- db[!i, ]
+
+db_train %>%
+  count(diagnosis) %>%
+  mutate(freq = n / sum(n))
+
+db_test %>%
+  count(diagnosis) %>%
+  mutate(freq = n / sum(n))
+
+k <- 1
+
+fit <- knn(
+  train = db_train[, -1],
+  test = db_test[,-1],
+  cl = db_train[[1]],
+  k = k
+)
+
+ct <- table(fit, db_test[[1]])
+ct
+
+sum(diag(ct)) / sum(ct)
+
+```
+
+
+Aqui poderia usar um Cross-validation?
+From Marco Antonio Vieira Morais to Everyone:  08:18 PM
+Tenho visto a partição ser feita em três partes... Treino, Validação e Teste
+From Wagner Bonat to Everyone:  08:19 PM
+é
+essa recomendação esta sendo mais utilizada
+mas a base precisa ser grande
+poderia fazer via validação cruzada tbm
+From Marco Antonio Vieira Morais to Everyone:  08:19 PM
+Ou ainda fazer um Cross-validation... e depois do modelo selecionado fazer a partição em Treino e Teste. Nesse caso acho estranho se já fez o cv já está bom rsrs
+From Wagner Bonat to Everyone:  08:20 PM
+uma recomendação meio regra do dedão
+é se a base é grande o suficiente separa em trẽs
+se não for faça validação cruzada
+From Marco Antonio Vieira Morais to Everyone:  08:21 PM
+ótimo! Obrigado.
+
+
+
+
+```{r}
+```
+
+
+
+```{r}
+=======
+---
+title: "Caderno"
+author: "Helena"
+date: "09/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# 0. Curso 0 - Introdução a Ciência de Dados
+
+## 0.1. Aula /10/2021 - Abertura
+
+## 0.2. Aula /10/2021 - R geral
+
+http://leg.ufpr.br/~walmes/introds/
+
+Git: https://github.com/HelenaDEspindula/Omega_Course_1.git
+<<<<<<< HEAD
+
+http://omegadatascience.com.br/downloads/instrucoes.html
+=======
+>>>>>>> d9842829a2a531f827dce1db759358ce988ef3ea
+
+## Atalhos R
+
+- Ctrl + enter - avalia paragrafo
+- Ctrl +shift + 0 - 4 telas
+- Mouse na função + F1 - abre help da função
+- Ctrl + shift + c - comenta e descomenta
+- Alt + "-" - setinha de atribuição
+- Ctrl + shift + M - pipe
+- Ctrl + i - tab?
+
+## Exemplo 1 - Futebol
+
+```{r }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 3599d7be885b4c969c479fac4029b938b4705b5f
+library(tidyverse)
+library(readr)
+packageVersion("readr")
+
+# Caminho para o arquivo na WEB.
+
+#url <- "http://leg.ufpr.br/~walmes/data/euro_football_players.txt"
+url <- "euro_football_players.txt"
+
+# Leitura com `readr`.
+tb <- read_tsv(
+  file = url,
+  col_names = TRUE,
+  quote = "",
+  comment = "#"
+)
+class(tb)
+str(tb, give.attr = FALSE)
+
+#ncol(tb)
+#nrom(tb)
+dim(tb) ##dimensões
+```
+
+```{r }
+# 2. O nome das equipes.
+
+#tb$team
+
+unique(tb$team)
+
+#tb %>%
+#  distinct(team) %>%
+#print(n=Inf) %>%
+#View()
+
+tb_distin <- tb %>%
+  distinct(team)
+tb_distin
+
+## tb %>% distinct(team)= distinct(tb, team)
+## %>% = operador pipe
+```
+
+```{r }
+# 3. Total de jogadores por equipe.
+
+tb %>%
+  count(team, sort = TRUE)
+```
+
+```{r }
+# 4. Total de jogadores por país de origem.
+
+tb %>%
+  count(country, sort = TRUE)
+```
+
+```{r }
+# 5. Total de gols por equipe.
+# 6. Total de cartões amarelos por equipe.
+# 7. Total de cartões amarelos e vermelhos por equipe.
+
+# tb %>%
+#   count(, sort = TRUE)
+
+names(tb)
+
+tb %>%
+  group_by(team) %>%
+  summarise(
+    goal = sum(goal, na.rm = TRUE),
+    amarelos = sum(yel, na.rm = TRUE),
+    vermelhos = sum(red, na.rm = TRUE)) %>%
+  head()
+
+tb %>%
+  group_by(team) %>%
+  summarise_at(c("goal", "yel", "red"), sum, na.rm = TRUE) %>%
+  head()
+
+
+tb %>%
+  group_by(team) %>%
+  summarise_at(c("goal", "yel", "red"), c("mean", "sd", "sum"), na.rm = TRUE) %>%
+  head()
+
+
+tb %>%
+  group_by(team) %>%
+  summarise_if(is.numeric, c("mean", "sd", "sum"), na.rm = TRUE) %>%
+  head()
+
+
+# summarise_all() - aplica em tudo
+```
+
+```{r }
+# 8. Substitua o NA dos cartões por 0.
+
+#Verificar se todos os NA podem ser substituidos por 0!!!
+head(tb, n = 20L)
+
+a <- 0
+b <- mean(tb$cm, na.rm = TRUE)
+tb2 <- tb %>%
+  replace_na(replace = list(
+    goal = a,
+    yel = 0,
+    red = 0,
+    cm = b,
+    kg = 80
+<<<<<<< HEAD
+  ))
+=======
+  )) %>%
+  head()
+  #View()
+>>>>>>> 3599d7be885b4c969c479fac4029b938b4705b5f
+
+head(tb2, n = 20L)
+#View()
+
+
+tb2 <- tb %>%
+  replace_na(replace = list(
+    goal = a,
+    yel = 0,
+    red = 0,
+    cm2 = mean(tb$cm, na.rm = TRUE),
+    kg = 80
+<<<<<<< HEAD
+  ))
+
+head(tb2, n = 20L)
+#View()
+=======
+  )) %>%
+  head()
+  #View()
+>>>>>>> 3599d7be885b4c969c479fac4029b938b4705b5f
+
+find("replace_na")
+find("group_by")
+find("summarize")
+```
+
+```{r }
+# 9. Obtenha a média, médiana e desvio-padrão de (idade|altura|peso) por equipe.
+
+tb %>%
+  group_by(team) %>%
+  summarise_at(c("cm", "kg", "age"), c("mean", "median", "sd"), na.rm = TRUE) %>%
+  head()
+
+# 10. Determine a correlação entre peso e altura por equipe.
+
+tb %>%
+  group_by(team) %>%
+  summarise(correlacao = cor(kg, cm, use = "pairwise.complete.obs")) %>%
+  head()
+#pear?
+
+# 11. Determine o IMC médio por equipe.
+
+# IMC = peso (kg) / (alt (m) )²
+
+tb <- tb %>%
+  mutate(imc = kg / (cm / 100) ^ 2)
+  
+head(tb)
+
+#View(tb)
+<<<<<<< HEAD
+=======
+head(tb)
+>>>>>>> 3599d7be885b4c969c479fac4029b938b4705b5f
+
+tb %>%
+  group_by(team) %>%
+  summarise_at("imc", mean, na.rm = TRUE) %>%
+  arrange(desc(imc)) %>%
+  head()
+
+tb %>%
+  slice_max(order_by = imc, n = 10) %>%
+  select(name, cm, kg, imc) %>%
+  head()
+
+select(name, cm, kg, imc)
+
+```
+
+```{r }
+# 11.5 Crie a variável que represente a classe de obesidade pelo IMC.
+
+lim <- c(0, 16.5, 18.5, 25, 30, 35, 40, Inf)
+
+lab <- c("sev", "aba", "normal", "preobe", "obe1", "obe2", "obe3")
+
+head(tb, n = 20L)
+
+tb2 <- tb %>%
+  mutate(imc_classe = cut(imc, breaks = lim, labels = lab))
+
+#View(tb)
+head(tb2, n = 30L)
+
+tb2 %>%
+  count(imc_classe)
+
+tb2 %>%
+  filter(imc_classe == "preobe") %>%
+  select(name, kg, cm, imc, imc_classe, team) %>%
+  count(team, sort = TRUE)
+
+
+#View(tb2)
+head(tb2)
+```
+
+```{r }
+# 12. Calcule a proporção de disputas aéreas ganhas por faixa de altura com amplitura de classe de altura de 5 cm.
+
+range(tb$cm, na.rm = TRUE)
+
+lim <- seq(160, 210, by = 5)
+
+tb <- tb %>%
+  mutate(cm_classe = cut(cm, breaks = lim))
+
+#View(tb)
+head(td)
+
+tb %>%
+  select(aw)
+
+tb %>%
+  group_by(cm_classe) %>%
+  summarise_at("aw", mean, na.rm = TRUE)
+
+tb <- tb %>%
+  mutate(cm_classe2 = cut(cm, breaks = lim, right = FALSE))
+
+tb %>%
+  group_by(cm_classe2) %>%
+  summarise_at("aw", mean, na.rm = TRUE)
+```
+
+```{r }
+# 13. Crie a variável que representa a posição em campo do jogador.
+
+tb %>%
+  count(pos)
+
+tb %>%
+  mutate(position = str_sub(pos, 0, 1)) %>%
+  count(position)
+
+tb <- tb %>%
+  mutate(position = str_replace(pos, "^([A-Z]+).*", "\\1"))
+
+tb %>%
+  count(position)
+
+##REGEX
+
+```
+
+```{r }
+# 13. Tabela times x posição
+
+tb %>%
+  count(team, position) %>%
+  pivot_wider(names_from = position, values_from = n)
+
+
+tb %>%
+  count(cm_classe, position) %>%
+  pivot_wider(names_from = position, values_from = n)
+
+```
+
+
+## Exemplo 2 - Carros
+
+
+```{r }
+# Caminho para os dados.
+url <-
+  "http://leg.ufpr.br/~walmes/data/hb20_venda_webmotors_280314.txt"
+
+# Leitura com `readr`.
+
+tb <- read_tsv(file = url,
+               col_names = TRUE)
+
+class(tb)
+
+str(tb, give.attr = FALSE)
+
+#View(tb)
+head(tb)
+
+tb %>%
+  count(carro) %>%
+  mutate(freq = n / sum(n))
+
+tb %>%
+  count(cor, sort = TRUE)
+
+tb %>%
+  count(cor, carro) %>%
+  pivot_wider(names_from = "carro", values_from = n)
+
+xtabs(~ cor + carro, data = tb)
+
+tb <- tb %>%
+  mutate(cambio = ifelse(
+    str_detect(especificacao, "MANUAL"),
+    yes = "MANUAL",
+    no = "AUTO"
+  ))
+
+tb %>%
+  count(cambio)
+# tb %>%
+#   mutate(cambio = case_when(str_detect(especificacao, "MANUAL") ~ "MANUAL"
+#                             TRUE ~ "AUTO") %>%
+#            count(cambio)
+
+with(tb, cor(km, preco))
+
+tb %>%
+  mutate_at(c("preco", "km"), ~ cut_number(., n = 1)) %>%
+  count(preco, km)
+
+tb %>%
+  mutate(preco = cut_number(preco, 4),
+         km = cut(km, c(0, 1, 5000, 30000, Inf), right = FALSE)) %>%
+  count(preco, km) %>%
+  pivot_wider(names_from = "km", values_from = "n")
+
+tb %>%
+  mutate(km = cut(
+    km,
+    breaks = c(0, 1, 5000, 30000, Inf),
+    labels = c("novo", "seminovo", "semiusado", "usado")),
+  right = FALSE) %>%
+  group_by(carro, km) %>%
+  summarise_at("preco", mean) %>%
+  pivot_wider(names_from = "carro", values_from = "preco")
+
+```
+
+```{r }
+# 1. O número de veículos da tabela.
+# 2. O tipo de valor de cada variável.
+# 3. O número de veículos à venda por modelo.
+# 4. O número de veículos de cada cor.
+# 5. O preço médio de cada modelo.
+# 6. O número médio de km rodados por ano por modelo.
+# 7. O preço médio por veículo para faixas de km rodados com amplitude de classe de 10 km.
+```
+
+
+
+
+## 0.3. Aula /10/2021 - Modelagem
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+
+
+## 0.4. Aula 04/11/2021 - Estatistica
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+
+
+## 0.5. Aula 09/11/2021 - Modelagem
+
+EXEMPLO
+
+```{r}
+rm(list = ls())
+
+## Carregando alguns pacotes adicionais
+library(readr) # Leitura de arquivos
+library(dplyr) # Manipulação de dados
+library(lubridate) # Manipulação de datas e horas
+library(ggplot2) ## Gráficos
+
+## Carregando a base de dados
+url <- "http://leg.ufpr.br/~wagner/data/omegafly.csv"
+dados <- read_csv2(url)
+
+## Dar uma olhada na base de dados
+#View(dados)
+head(dados)
+
+```
+
+
+```{r}
+## Calculando os atrasos
+
+#dados$hora_prevista_chegada <- hm(dados$hora_prevista_chegada )
+#dados$hora_chegada <- hm(dados$hora_chegada)
+
+dados$hora_prevista_chegada2 <-
+  hms(dados$hora_prevista_chegada, roll = TRUE)
+
+dados$hora_chegada2 <- hms(dados$hora_chegada, roll = TRUE)
+
+str(dados)
+
+dados$atraso <- dados$hora_chegada2 - dados$hora_prevista_chegada2
+
+dados$atraso <- as.numeric(dados$atraso) / 60
+
+## Olhando o resultado
+#View(dados)
+head(dados)
+
+```
+
+
+```{r}
+## Histograma
+ggplot(dados) +
+  geom_histogram(aes(atraso))
+
+## Valores negativos, estranho?
+dados %>%
+  filter(atraso < -100) #%>%
+  #View(dados)
+
+head(dados)
+
+```
+
+
+```{r}
+## Vamos somar 60*24 = 1440 minutes apenas nestes casos
+dados <- dados %>%
+  mutate(atraso = ifelse(atraso < -100, atraso + 1440, atraso))
+
+## Para facilitar a visualização vamos excluir atrasos acima de 500
+dados <- dados %>% 
+  mutate(atraso = ifelse(atraso > 500, NA, atraso))
+
+## Distribuição de frequências
+ggplot(dados) +
+  geom_histogram(aes(atraso))
+
+```
+
+
+```{r}
+## Por que um voo atrasa?
+
+## Aeroporto de origem ---------------------------------------------------------
+ggplot(dados) +
+  geom_density(aes(atraso, y = ..density.., fill = origin))
+
+ggplot(dados) +
+  geom_boxplot(aes(x = origin, y = atraso))
+
+## Operadora do voo ------------------------------------------------------------
+ggplot(dados) +
+  geom_density(aes(atraso, y = ..density.., fill =carrier))
+
+ggplot(dados) +
+  geom_boxplot(aes(x = carrier, y = atraso))
+
+ggplot(dados) +
+  geom_boxplot(aes(x = carrier, y = atraso)) +
+  facet_wrap(~ origin)
+
+## Atraso médio por operadora e aeroporto de origem
+dados %>%
+  group_by(origin, carrier) %>%
+  summarize("Media" = mean(atraso, na.rm = TRUE),
+            "Desvio_padrao" = sd(atraso, na.rm = TRUE))
+```
+
+
+```{r}
+
+## Criando covariáveis baseado na data -----------------------------------------
+dados$time_hour <- as.POSIXct(dados$time_hour, format = "%Y/%m/%d %H:%M")
+dados <- dados %>%
+  mutate(ano = year(time_hour),
+         dia_semana = wday(time_hour, label = TRUE),
+         dia_ano = yday(time_hour),
+         dia_mes = mday(time_hour),
+         mes = month(time_hour, label = TRUE), 
+         dia = day(time_hour),
+         hora = hour(time_hour),
+         minuto = minute(time_hour), .)
+
+dados$dia_semana <- factor(dados$dia_semana, levels = c("dom", "seg", "ter", 
+                                                        "qua", "qui", "sex", "sáb"))
+dados$mes <- factor(dados$mes, levels = c("jan", "fev", "mar", "abr", "mai", "jun",
+                                          "jul", "ago", "set", "out", "nov", "dez"))
+```
+
+
+```{r}
+## Hora prevista da partida-----------------------------------------------------
+ggplot(dados) +
+  geom_boxplot(aes(x = as.factor(hora), y = atraso))
+
+dados %>%
+  group_by(hora) %>%
+  summarize("Media" = mean(atraso, na.rm = TRUE),
+            "Desvio_padrao" = sd(atraso, na.rm = TRUE))
+```
+
+
+```{r}
+## Dia da semana ---------------------------------------------------------------
+ggplot(dados) +
+  geom_boxplot(aes(x = dia_semana, y = atraso))
+
+dados %>%
+  group_by(dia_semana) %>%
+  summarize("Media" = mean(atraso, na.rm = TRUE),
+            "Desvio_padrao" = sd(atraso, na.rm = TRUE))
+```
+
+```{r }
+## Dia do mês ------------------------------------------------------------------
+ggplot(dados) +
+  geom_boxplot(aes(x = as.factor(dia_mes), y = atraso))
+
+dados %>%
+  group_by(dia_mes) %>%
+  summarize("Media" = mean(atraso, na.rm = TRUE),
+            "Desvio_padrao" = sd(atraso, na.rm = TRUE)) %>%
+  head()
+  #View()
+```
+
+```{r }
+## Dia do ano ------------------------------------------------------------------
+ggplot(dados) +
+  geom_boxplot(aes(x = as.factor(dia_ano), y = atraso))
+```
+
+```{r }
+## Mes do ano ------------------------------------------------------------------
+ggplot(dados) +
+  geom_boxplot(aes(x = mes, y = atraso))
+
+dados %>%
+  group_by(mes) %>%
+  summarize("Media" = mean(atraso, na.rm = TRUE),
+            "Desvio_padrao" = sd(atraso, na.rm = TRUE))
+
+## Voltar para os slides.
+
+```
+
+### Inferencia estatistica
+- Modelo -> comportamento da natureza
+- Parâmetros do modelo -> parametros populacionais de interesse
+- Qual moddelo melhor descreve os dados?
+- Baseado na amostra -> encontrar os parâmetros compativeis com a amostra
+- Descrever a incerteza -> distribuição amostral
+
+
+### O que é um modelo?
+- É uma função parametrizada (controlada)
+- Distribuição de probabilidade
+
+[...]
+
+### Fenômenos aleatórios
+
+
+### Modelo estatístico
+- Modelos fornecem fórmulas gerais para tratar situações similares
+- Permite determinar probabilidades de eventos
+- Servem para estimar parâmetros
+- Permitem realizar testes de hipoteses
+- Permitem compreender/acomodar o efeito de covariaveis sobre o comportamento da variavel de interesse
+- São empregados para fazer previsão
+- Fazem suposições que podem ou não serr razoaveis
+- Podem ser flexibilizados para acomodar diferentes situações
+
+### Inferência estatística
+- População -> distribuição de probabilidade
+- Intuição -> como a variavel aleatoria se comporta na população
+- Variavel de interesse -> variavel aleatoria
+- Parametro da população -> parametros da distribuição de probabilidade
+- Como a partir da amostra estimar os parametros populacionais?
+ -- Método de max verossim *
+ -- Método dos min quadrados
+ -- Métodos do momentos
+ -- Funções de estimações
+ -- etc
+ 
+*mais popular e com melhores propried estatisticas
+ 
+### Modelos de regressão - 17 e 18
+ 
+Conjunto de técnicas aplicadas na analise e modelagem da relação estatisytica entre as variaveis. Generalização do que é chamado em ML de aprendizagem supervisionada 
+
+(esperança?) 
+
+### O que pensam os criadores? - 19
+
+"All models are wrong but some are useful" - George Box
+
+"No matter how beautiful your theory..." - Richard Feynman
+
+"Far better an approximate answer to the right question..." - John W. Tukey
+
+
+### Componentes do modelo de regressão
+
+[imagem com formulas]
+
+###
+
+Variavel resposta
+co-variaveis (influenciam a resposta)
+Distribuição de probabilidade (normal, binomial, poisson, beta etc)
+Quantidade = funsão
+
+### Objetivos
+
+Nível 1: O objetivo é meramente descritivo.
+
+- Livre de suposições.
+- Não envolve inferência estatística.
+
+Nível 2: Inferência estatística é o principal objetivo.(Associação)
+
+- Intervalos de confiança e testes de hipóteses.
+- Núcleo da estatística convencional.
+- Uso correto com dados observacionais é um grande desafio.
+
+Nível 3: Inferência causal. (Causa)
+
+- Demanda uma especificação conceitual do modelo.
+- Baseado em conhecimento específico do fenômeno.
+- Dados experimentais.
+- Aspectos confundidores devem ser cuidadosamente controlados.
+
+### Frameworks populares - 30
+
+- Modelos lineares(lm() pacote car).
+- Modelos não lineares (nls()).
+- Modelos lineares generalizados (glm()).
+- Modelos aditivos generalizados (gam()).
+- Modelos aditivos generalizados para locação, escala e corpo (gamlss()).
+- Aspectos em comum:
+  - Ajuste é baseado no método da Máxima Verossimilhança ou alguma aproximação deste.
+- Principais limitações:
+  - Conjunto limitado de distribuições.
+  - Assume que as observações são independentes.
+  - Apenas uma variável resposta.
+
+
+```{r}
+## Especificando um modelo simples para descrever os atrasos --------------------
+
+
+## Acertando as categorias para mostrar na ordem natural
+dados$dia_semana <- as.character(dados$dia_semana)
+dados$dia_semana <- as.factor(dados$dia_semana)
+dados$dia_semana <- factor(dados$dia_semana, levels = c("dom", "seg", "ter", 
+                                                        "qua", "qui", "sex", "sáb"))
+
+dados$mes <- as.character(dados$mes)
+dados$mes <- as.factor(dados$mes)
+dados$mes <- factor(dados$mes, levels = c("jan", "fev", "mar", "abr", "mai", "jun",
+                                          "jul", "ago", "set", "out", "nov", "dez"))
+
+
+## Regressão linear simples
+# Efeito só da origem
+
+#modelo <- lm(variavel_de_interres ~ explicada_por_variavel, origem_dos_dados)
+fit1 <- lm(atraso ~ origin, data = dados)
+summary(fit1)
+
+#aeroporto parece não fazer diferença
+
+
+## Regressão linear múltipla
+# Efeito da operadorad
+fit2 <- lm(atraso ~ carrier, data = dados)
+summary(fit2)
+
+#p significativo
+
+## Hora do dia
+fit3 <- lm(atraso ~as.factor(hora), data = dados)
+summary(fit3)
+
+## Dia da semana
+fit4 <- lm(atraso ~ dia_semana, data = dados)
+summary(fit4)
+
+## Dia do mês
+fit5 <- lm(atraso ~ as.factor(dia), data = dados)
+summary(fit5)
+
+## Mes do ano
+fit6 <- lm(atraso ~ mes, data = dados)
+summary(fit6)
+
+## Dia do ano
+fit7 <- lm(atraso ~ as.factor(dia_ano), data = dados)
+summary(fit7)
+
+## Juntando tudo!
+fit_completo <- lm(atraso ~ origin + carrier +as.factor(hora) + 
+                     dia_semana + mes, data = dados)
+summary(fit_completo)
+
+## E dia do ano e dia do mes? 
+fit_completo2 <- lm(atraso ~ origin + carrier +as.factor(hora) + dia_semana + mes +
+                     as.factor(dia_mes) + as.factor(dia_ano), data = dados)
+summary(fit_completo2)
+
+## Muitos parâmetros!! Superparametrização ???
+anova(fit_completo2)
+
+## Tem como simplificar?
+require(mgcv)
+fit_smooth <- gam(atraso ~ origin + carrier + as.factor(hora) + dia_semana + mes +
+                   s(dia_mes) + s(dia_ano), data = dados)
+summary(fit_smooth)
+plot(fit_smooth)
+
+## Podemos criar uma espécie de API em que entramos com as características do
+# voo e a API solta o tempo esperado de atraso a incerteza associada. Podemos
+# tbm calcular probabilidades de interesse, por exemplo, probabilidade de atrasar
+# mais de 60 minutos.
+
+```
+
+```{r }
+################################################################################
+
+## Regressão logística
+
+# Vamos supor que queremos apenas calcular a probabilidade de atrasar mais de 60 minutos.
+# Podemos criar uma nova variável resposta sendo: 0 se Y < 60 e 1 Y >= 60
+
+dados <- dados %>%
+  mutate(binaria = ifelse(atraso < 60, 0, 1))
+prop.table(table(dados$binaria))
+
+
+## Modelo completo
+fit_logistico <- gam(binaria ~ origin + carrier + as.factor(hora) + 
+                       dia_semana + mes + s(dia_mes) + s(dia_ano), 
+                     family = binomial, data = dados)
+summary(fit_logistico)
+
+################################################################################
+
+## Projeto: Detectando o genero baseado em características da voz
+
+# Nome: Gender Recognition by Voice
+# Tipo de resposta: Binária
+# Modelo candidato: Regressão logística
+# Endereço: Gender Recognition by Voice
+# Arquivo: voice.csv
+# Nível: Intermediário
+
+```
+
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+
+
+
+
+
+
+### Tópicos avançados
+ 
+### O que são observações não independentes? 
+- Observações com alguma referência espacial.
+- Dados de área.
+- Geostatística.
+- Processos pontuais.
+- Séries temporais.
+- Dados longitudinais.
+- Dados de família (gêmeos).
+
+
+### Múltiplas variáveis resposta
+
+- Descrição do fenômeno aleatório é feita por meio de várias variáveis aleatórias.
+- Experiência do usuário em um app: Tempo de permanência, número de cliques, número de acessos.
+- Fertilidade: Número de ovos, número de embriões, nível de estradiol e gonatropim.
+- Eficácia de fisioterapia respiratória: Taxa de respiração, batimento cardiáco, saturação de oxigênio.
+
+### Modelos multivariados de covariância linear generalizada
+- McGLMs é um framework genérico para especificação de modelos estatísticos para
+dados não independentes e múltiplas respostas.
+- Proposto em 2016 por Bonat e Jorgensen.
+- Generaliza e unifica uma série de statistical modelling frameworks:
+  - Modelos lineares generalizados (GLMs).
+  - Modelos mistos (LMM).
+  - Double GLMs.
+  - Modelos para dados longitudinais e medidas repetidas.
+  - Séries temporais.
+  - Dados espaciais e espaço-temporais.
+  - Dados genéticos, família e gêmeos.
+  - Etc ...
+
+
+### Projeto V: Ajustando um modelo
+
+- Reconhecimento de gênero baseado em característica da voz.
+- Aplicação da regressão logística.
+- Conjunto de dados: voice.csv
+- Kaggle: https://www.kaggle.com/primaryobjects/voicegender
+- Disponível em leg.ufpr.br/~wagner/data
+
+## 0.5. Aula 09/11/2021 - Machine Learnig
+
+### Categorias:
+1. Supervisionado
+  - Regressão
+  - Classificação
+2. Não supervisionado
+  - Agrupamento: kmeans; hirer (hierarquico)
+  - Redução de dimesão: t-snt, pca
+  - Regras de associação: FP-Grath, A-rebels
+3. Semi-supervisionado
+4. Aprendizado para Reforço
+
+### Modelos
+
+Variaveis (x1, x2, x3) -> [ Modelo ] -> y
+
+- Naive Bayes -> Redes baysianas
+- SVN -> Regressão
+- Redes Neurais -> Árvores -> Florestas Aleatórias
+
+Modelo inclui o pre-processamento
+
+"tudo q vc faz com ML vc faz com modelos estatísticos, mas o inverso não é verdade"
+
+### KNN (k vizinhos mais proximos)
+
+Exemplo
+
+x1 |
+   |
+   |
+   ________
+        x2
+        
+x1 e x2 são numericos
+
+Classificação em A e B
+
+Lazy learner -> vê quem está mais proximo e coloca na mesma categoria
+k = 1 (o vizinho mais proximo)
+k = 2 (os dois mais proximos)
+etc
+
+votação simples
+k = 6 -> se 4 vermelhos e 2 pretos o vermelho ganha por votação simples
+
+
+ponderado pela distancia
+
+k é um hiperparâmetro - nois variamos para ver o que funciona melhor
+
+
+tem que considerar a escala de cada parametro para evitar valorizar acidentalmente 
+
+Conjunto de treino
+
+
+
+```{r}
+#-----------------------------------------------------------------------
+#                                            Prof. Dr. Walmes M. Zeviani
+#                                leg.ufpr.br/~walmes · github.com/walmes
+#                                        walmes@ufpr.br · @walmeszeviani
+#                      Laboratory of Statistics and Geoinformation (LEG)
+#                Department of Statistics · Federal University of Paraná
+#                                       2021-nov-11 · Curitiba/PR/Brazil
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
+# Pacotes.
+
+rm(list = objects())
+
+library(tidyverse)
+library(DataExplorer)
+library(GGally)
+
+#-----------------------------------------------------------------------
+```
+
+```{r }
+# Aquisição dos dados.
+
+url <- "http://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data"
+da <- read_csv(url, col_names = FALSE)
+attr(da, "spec") <- NULL
+str(da)
+```
+
+```{r }
+# Criando o nome das variáveis.
+nms <- c("radius", "texture", "perimeter", "area", "smoothness",
+         "compactness", "concavity", "concave", "symmetry",
+         "fractal")
+n <- outer(Y = c("mn", "sd", "lg"),
+           X = nms,
+           FUN = paste, sep = "_")
+names(da) <- c("id", "diagnosis", n)
+str(da)
+
+da <- da %>%
+    select(-id)
+
+da %>%
+    select(starts_with("radius"))
+
+```
+
+```{r }
+da %>%
+    count(diagnosis) %>%
+    mutate(freq = n/sum(n))
+
+ls("package:DataExplorer")
+
+plot_boxplot(da, by = "diagnosis", nrow = 6, ncol = 5)
+
+ggpairs(data = select(da, diagnosis, ends_with("mn")),
+        ggplot2::aes(colour = diagnosis))
+
+ggpairs(data = select(da, diagnosis, ends_with("sd")),
+        ggplot2::aes(colour = diagnosis))
+
+ggpairs(data = select(da, diagnosis, ends_with("lg")),
+        ggplot2::aes(colour = diagnosis))
+
+```
+
+
+
+
+Z-score
+
+Z = (y - ÿ)/ sd(y) -> faz com que a media seja 0 e variancia seja 1
+Variancia é 1 mas a amplitude varia
+
+U = (y - min(y))/ max(y) - min(y) -> U E [0,1]-> MIN VIRA 0 E MAXIMO 1 e interpola o resto
+Amplitude é sempre 1
+
+
+
+
+```{r}
+to_unit <- function(x) {
+  a <- min(x)
+  b <- max(x)
+  (x-a)/(b-a)
+}
+
+names(da)
+
+db <- da %>%
+  mutate_at(vars(-diagnosis), to_unit)
+
+summary(db)
+
+d_b <- da %>%
+  mutate_at(vars(-diagnosis), to_unit)
+
+summary(d_b)
+
+```
+
+Dividir entre grupo de treino (criação) e de teste
+
+```{r}
+
+
+library(class)
+
+p <- 0.75
+n <- nrow(db)
+
+i <- sample(
+  c(TRUE, FALSE),
+  size = n,
+  replace = TRUE,
+  prob = c(p, 1 - p)
+)
+table(i)
+
+db_train <- db[i, ]
+db_test <- db[!i, ]
+
+db_train %>%
+  count(diagnosis) %>%
+  mutate(freq = n / sum(n))
+
+db_test %>%
+  count(diagnosis) %>%
+  mutate(freq = n / sum(n))
+
+k <- 1
+
+fit <- knn(
+  train = db_train[, -1],
+  test = db_test[,-1],
+  cl = db_train[[1]],
+  k = k
+)
+
+ct <- table(fit, db_test[[1]])
+ct
+
+sum(diag(ct)) / sum(ct)
+
+```
+
+
+Aqui poderia usar um Cross-validation?
+From Marco Antonio Vieira Morais to Everyone:  08:18 PM
+Tenho visto a partição ser feita em três partes... Treino, Validação e Teste
+From Wagner Bonat to Everyone:  08:19 PM
+é
+essa recomendação esta sendo mais utilizada
+mas a base precisa ser grande
+poderia fazer via validação cruzada tbm
+From Marco Antonio Vieira Morais to Everyone:  08:19 PM
+Ou ainda fazer um Cross-validation... e depois do modelo selecionado fazer a partição em Treino e Teste. Nesse caso acho estranho se já fez o cv já está bom rsrs
+From Wagner Bonat to Everyone:  08:20 PM
+uma recomendação meio regra do dedão
+é se a base é grande o suficiente separa em trẽs
+se não for faça validação cruzada
+From Marco Antonio Vieira Morais to Everyone:  08:21 PM
+ótimo! Obrigado.
+
+
+
+
+```{r}
+```
+
+
+
+```{r}
+>>>>>>> 92353f25cbacecc8e559d848d059ac08977e28dd
+```
